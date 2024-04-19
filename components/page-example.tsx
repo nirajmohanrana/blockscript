@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import {
   Table,
@@ -17,9 +17,55 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 
-import ReactFlow, { Background, BackgroundVariant } from "reactflow";
+import ReactFlow, {
+  Background,
+  BackgroundVariant,
+  DefaultEdgeOptions,
+  Edge,
+  FitViewOptions,
+  Node,
+  OnConnect,
+  OnEdgesChange,
+  OnNodesChange,
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  useStoreApi,
+} from "reactflow";
+import nodeTypes from "@/config/nodeTyes";
 
-import StringNode from "@/components/nodes/datatypes/StringNode";
+const initialNodes: Node[] = [
+  { id: "1", data: { label: "Node 1" }, position: { x: 5, y: 5 } },
+  { id: "2", data: { label: "Node 2" }, position: { x: 5, y: 100 } },
+  {
+    id: "3",
+    data: {},
+    position: { x: 5, y: 200 },
+    type: "numberNode",
+  },
+  {
+    id: "4",
+    data: {},
+    position: { x: 205, y: 200 },
+    type: "textNode",
+  },
+  {
+    id: "5",
+    data: {},
+    position: { x: 405, y: 200 },
+    type: "gasGetSheetValues",
+  },
+];
+
+const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
+
+const fitViewOptions: FitViewOptions = {
+  padding: 0.2,
+};
+
+const defaultEdgeOptions: DefaultEdgeOptions = {
+  animated: true,
+};
 
 const PageExample = () => {
   const studentsMarks = [
@@ -82,6 +128,22 @@ const PageExample = () => {
     },
   ];
 
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange: OnEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  );
+  const onConnect: OnConnect = useCallback(
+    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
+
   return (
     <section id="example" className="w-full pt-16">
       <Balancer className="py-2">
@@ -91,16 +153,16 @@ const PageExample = () => {
       <div className="w-full flex items-center h-80 py-4 gap-2">
         <div className="w-1/2 h-full bg-secondary">
           <ReactFlow
-            nodes={[
-              {
-                id: "1",
-                type: "input",
-                data: { label: "Input Node" },
-                position: { x: 0, y: 0 },
-              },
-            ]}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+            fitViewOptions={fitViewOptions}
+            defaultEdgeOptions={defaultEdgeOptions}
+            nodeTypes={nodeTypes}
           >
-            <StringNode />
             <Background />
           </ReactFlow>
         </div>
