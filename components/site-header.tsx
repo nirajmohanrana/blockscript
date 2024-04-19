@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { MainNav } from "@/components/main-nav";
 import { ModeToggle } from "@/components/mode-toggle";
-import { buttonVariants } from "@ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export function SiteHeader() {
   return (

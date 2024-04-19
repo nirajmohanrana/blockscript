@@ -1,6 +1,10 @@
 import { siteConfig } from "@/config/site";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui//hover-card";
 import Link from "next/link";
 
 export function SiteFooter() {

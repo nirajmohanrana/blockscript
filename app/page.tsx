@@ -1,11 +1,9 @@
 import Link from "next/link";
 import Balance from "react-wrap-balancer";
 import { Component1Icon, ArrowRightIcon } from "@radix-ui/react-icons";
-import { Separator } from "@ui/separator";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { RxStar } from "react-icons/rx";
@@ -21,7 +19,6 @@ export default function Home() {
           className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium group mb-5"
         >
           <Component1Icon className="h-4 w-4 group-hover:rotate-45 delay-100 duration-300 ease-in-out" />
-          <Separator className="mx-1 h-4" orientation="vertical" />
           <span>Introducing Blocks</span>
           <ArrowRightIcon className="ml-1 h-4 w-4 group-hover:translate-x-2 delay-75 duration-150 ease-in-out" />
         </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Balancer from "react-wrap-balancer";
 import {
   Table,
@@ -9,14 +9,17 @@ import {
   TableRow,
   TableHeader,
   TableHead,
-} from "@ui/table";
-import { ScrollArea } from "./ui/scroll-area";
+} from "@/components/ui/table";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+
+import ReactFlow, { Background, BackgroundVariant } from "reactflow";
+
+import StringNode from "@/components/nodes/datatypes/StringNode";
 
 const PageExample = () => {
   const studentsMarks = [
@@ -86,7 +89,21 @@ const PageExample = () => {
       </Balancer>
 
       <div className="w-full flex items-center h-80 py-4 gap-2">
-        <div className="w-1/2 h-full bg-secondary"></div>
+        <div className="w-1/2 h-full bg-secondary">
+          <ReactFlow
+            nodes={[
+              {
+                id: "1",
+                type: "input",
+                data: { label: "Input Node" },
+                position: { x: 0, y: 0 },
+              },
+            ]}
+          >
+            <StringNode />
+            <Background />
+          </ReactFlow>
+        </div>
         <div className="w-1/2 h-full bg-secondary"></div>
       </div>
 
