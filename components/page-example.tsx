@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useEffect } from "react";
 import Balancer from "react-wrap-balancer";
 import {
   Table,
@@ -19,45 +19,35 @@ import {
 
 import ReactFlow, {
   Background,
-  BackgroundVariant,
   DefaultEdgeOptions,
-  Edge,
   FitViewOptions,
   Node,
-  OnConnect,
-  OnEdgesChange,
-  OnNodesChange,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-  useStoreApi,
+  Panel,
 } from "reactflow";
-import nodeTypes from "@/config/nodeTyes";
+import allNodeTypes from "@/config/allNodeTypes";
+import { shallow } from "zustand/shallow";
+import exampleStore, { StoreState } from "@/store/example";
 
 const initialNodes: Node[] = [
-  { id: "1", data: { label: "Node 1" }, position: { x: 5, y: 5 } },
-  { id: "2", data: { label: "Node 2" }, position: { x: 5, y: 100 } },
   {
-    id: "3",
+    id: "1",
     data: {},
     position: { x: 5, y: 200 },
     type: "numberNode",
   },
   {
-    id: "4",
+    id: "2",
     data: {},
     position: { x: 205, y: 200 },
     type: "textNode",
   },
   {
-    id: "5",
+    id: "3",
     data: {},
     position: { x: 405, y: 200 },
     type: "gasGetSheetValues",
   },
 ];
-
-const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
 
 const fitViewOptions: FitViewOptions = {
   padding: 0.2,
@@ -128,21 +118,20 @@ const PageExample = () => {
     },
   ];
 
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const selector = (store: StoreState) => ({
+    nodes: store.nodes,
+    edges: store.edges,
+    onNodesChange: store.onNodesChange,
+    onNodesDelete: store.onNodesDelete,
+    onEdgesChange: store.onEdgesChange,
+    onEdgesDelete: store.onEdgesDelete,
+    addEdge: store.addEdge,
+    addTextNode: () => store.createNode("textNode"),
+    addNumberNode: () => store.createNode("numberNode"),
+    addGasGetSheetValues: () => store.createNode("gasGetSheetValues"),
+  });
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
-  const onEdgesChange: OnEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
-  );
-  const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
-  );
+  const store = exampleStore(selector, shallow);
 
   return (
     <section id="example" className="w-full pt-16">
@@ -153,16 +142,33 @@ const PageExample = () => {
       <div className="w-full flex items-center h-80 py-4 gap-2">
         <div className="w-1/2 h-full bg-secondary">
           <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
+            nodes={store.nodes}
+            edges={store.edges}
+            onNodesChange={store.onNodesChange}
+            onNodesDelete={store.onNodesDelete}
+            onEdgesChange={store.onEdgesChange}
+            onEdgesDelete={store.onEdgesDelete}
+            onConnect={store.addEdge}
             fitView
             fitViewOptions={fitViewOptions}
             defaultEdgeOptions={defaultEdgeOptions}
-            nodeTypes={nodeTypes}
+            nodeTypes={allNodeTypes}
+            proOptions={{ hideAttribution: true }}
           >
+            <Panel className={"space-x-4"} position="top-right">
+              <button
+                className={"px-2 py-1 rounded bg-white shadow"}
+                onClick={store.addTextNode}
+              >
+                Add Osc
+              </button>
+              <button
+                className={"px-2 py-1 rounded bg-white shadow"}
+                onClick={store.addNumberNode}
+              >
+                Add Amp
+              </button>
+            </Panel>
             <Background />
           </ReactFlow>
         </div>
